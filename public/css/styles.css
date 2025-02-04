@@ -36,6 +36,11 @@ body{
   justify-content: space-around;
 }
 
+#Horizontal_split img{
+  width: 80%;
+  height: auto;
+}
+
 #container{
   position: relative;
   margin-right:90%;
