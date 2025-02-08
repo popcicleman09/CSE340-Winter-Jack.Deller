@@ -13,6 +13,8 @@ const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/")
+const router = require("./routes/static")
+const Util = require("./utilities/")
 /* ***********************
  * View Engine and Remplates
  *************************/
@@ -30,13 +32,11 @@ app.use(static)
 //index route
 app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes
-app.use("/inv", inventoryRoute)
-
-
-// File Not Found Route - must be last route in list
-app.use(async (req, res, next) => {
-  next({status: 404, message: 'Sorry, we appear to have lost that page.'})
-})
+app.use("/inv", utilities.handleErrors(inventoryRoute))
+// Intentional error causer for internal testing
+router.get("/cause-error", Util.handleErrors((req, res) => {
+  throw new Error("This is an intentional server error.")
+}))
 
 /* ***********************
 * Express Error Handler
@@ -46,6 +46,7 @@ app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
   if(err.status == 404){ message = err.message} else {message = 'Oh no! There was a crash. Maybe try a different route?'}
+  if(err.status == 500){ message = err.message} else {message = 'I dont really get this one and neither did the server'}
   res.render("errors/error", {
     title: err.status || 'Server Error',
     message,
