@@ -70,7 +70,7 @@ Util.buildInventoryDetails = async function (data) {
     detail += "</div>"
 
     detail += "<div>"
-      detail += `<p>Price: $${data.inv_price}</p>`
+      detail += `<p>Price: $${parseInt(data.inv_price).toLocaleString()}</p>`
       detail += `<p>Year: ${data.inv_year}</p>`
       detail += `<p>Miles: ${data.inv_miles.toLocaleString()}</p>`
       detail += `<p>Color: ${data.inv_color}</p>`
