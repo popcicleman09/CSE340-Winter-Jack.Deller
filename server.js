@@ -15,6 +15,32 @@ const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/")
 const router = require("./routes/static")
 const Util = require("./utilities/")
+const session = require("express-session")
+const pool = require('./database/')
+
+/* ***********************
+ * Middleware
+ * ************************/
+app.use(session({
+  store: new (require('connect-pg-simple')(session))({
+    createTableIfMissing: true,
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  name: 'sessionId',
+}))
+
+// Express Messages Middleware
+app.use(require('connect-flash')())
+app.use(function(req, res, next){
+  res.locals.messages = require('express-messages')(req, res)
+  next()
+})
+
+
+
 /* ***********************
  * View Engine and Remplates
  *************************/
@@ -33,6 +59,9 @@ app.use(static)
 app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes
 app.use("/inv", utilities.handleErrors(inventoryRoute))
+// Account routes
+app.use("/account", require("./routes/accountRoute"))
+
 // Intentional error causer for internal testing
 router.get("/cause-error", Util.handleErrors((req, res) => {
   throw new Error("This is an intentional server error.")

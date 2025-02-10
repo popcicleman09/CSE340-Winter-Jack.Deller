@@ -57,9 +57,9 @@ Util.buildClassificationGrid = async function(data){
   return grid
 }
 
-/*
+/*************
 * Build details page html
-*/
+***************/
 Util.buildInventoryDetails = async function (data) {
   let detail = ""
 

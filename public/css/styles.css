@@ -19,7 +19,12 @@ body{
   background-size: 400px 400px;
 }
 
-
+.notice{
+  color: blue;
+}
+.error{
+  color: darkred;
+}
 #main{
   background-color: white;
   border: 4px solid rgb(67,147,217);
@@ -98,6 +103,28 @@ body{
 }
 .grid_item a{
   align-self: center;
+}
+
+.form_center_box{
+  background-color: rgb(67,147,217);
+  width: 50%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.form_center_box p a{
+  text-decoration-color: black;
+  color: black;
+}
+.form_box{
+  width: calc(100%-40px);
+  background-color: transparent;
+  border: 2px solid white;
 }
 
 @media (max-width:600px){
