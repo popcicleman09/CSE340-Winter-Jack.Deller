@@ -127,6 +127,7 @@ body{
   border: 2px solid white;
 }
 
+
 @media (max-width:600px){
   .navigator{
     padding-left: 10px;
