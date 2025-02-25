@@ -37,4 +37,45 @@ invCont.buildByInventoryId = async function (req, res, next) {
   })
 }
 
+/**
+ * Inventory managment
+ */
+
+invCont.buildInventoryManagement = async function (req, res, next) {
+  console.log("Inventory Management being accessed")
+  let nav = await utilities.getNav()
+  const title = "Inventory Management"
+  res.render("inventory/management",{
+    title,
+    nav,
+  })
+  
+}
+
+/**
+ * Add new Inventory
+ */
+invCont.buildAddInventory = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const title = "Add Inventory"
+  res.render("inventory/addInventory",{
+    title,
+    nav,
+  })
+  
+}
+
+/**
+ * Add new classification
+ */
+invCont.buildAddClassification = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const title = "Add Classification"
+  res.render("inventory/addClassification",{
+    title,
+    nav,
+  })
+  
+}
+
 module.exports = invCont
