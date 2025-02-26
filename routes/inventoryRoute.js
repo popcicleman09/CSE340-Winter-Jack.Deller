@@ -3,12 +3,22 @@ const express = require("express")
 const router = new express.Router() 
 const invController = require("../controllers/invController")
 const Util = require("../utilities/")
+const invValidate = require('../utilities/Inventory-validation')
 // Route to build inventory by classification view
 router.get("/type/:classificationId", Util.handleErrors(invController.buildByClassificationId));
 router.get("/detail/:inventory_id", Util.handleErrors(invController.buildByInventoryId))
 router.get("/", Util.handleErrors(invController.buildInventoryManagement))
 router.get("/addInventory" , Util.handleErrors(invController.buildAddInventory))
 router.get("/addClassification", Util.handleErrors(invController.buildAddClassification))
+
+//addClassificaiton post 
+router.post(
+    "/addClassification", 
+    invValidate.classificationRules(),
+    invValidate.checkClassData,
+    Util.handleErrors(invController.addClassification)
+
+)
 // File Not Found Route - must be last route in list
 router.get("/cause-error", Util.handleErrors((req, res, next) => {
     const error = new Error("This is an intentional server error.")

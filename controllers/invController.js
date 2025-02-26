@@ -61,6 +61,7 @@ invCont.buildAddInventory = async function (req, res, next) {
   res.render("inventory/addInventory",{
     title,
     nav,
+    errors,
   })
   
 }
@@ -74,8 +75,43 @@ invCont.buildAddClassification = async function (req, res, next) {
   res.render("inventory/addClassification",{
     title,
     nav,
+    errors: null,
   })
   
+}
+
+/**
+ * process new classificaiton
+ */
+invCont.addClassification = async function (req, res) {
+  const { classification_name } = req.body;
+  try {
+    const existing = await invModel.getClassification(classification_name)
+    if (existing > 0){
+      let nav = await utilities.getNav()
+      const title = "Add Classification"
+      req.flash("notice", 'classification already exists')
+      return res.status(400).render("inventory/addClassification",{
+        title,
+        nav,
+        errors: null,
+        classification_name,
+      });
+    }
+
+    // classification doesnt already exist
+    const result = await invModel.addClassification(classification_name)
+    if (result.rowCount > 0) {
+      req.flash("success", "Classification added successfully!");
+      return res.redirect("/inv/");
+    } else {
+      throw new Error("Database insert failed");
+    }
+  }catch (error){
+    console.error("error adding classification", error);
+    req.flash("error", "An unexpected error occurred");
+    res.status(500).redirect("/inv/addClassification");
+  }
 }
 
 module.exports = invCont
