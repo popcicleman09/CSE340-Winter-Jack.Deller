@@ -53,21 +53,23 @@ invCont.buildInventoryManagement = async function (req, res, next) {
 }
 
 /**
- * Add new Inventory
+ * Build Add new Inventory
  */
 invCont.buildAddInventory = async function (req, res, next) {
   let nav = await utilities.getNav()
+  let classification_list = await utilities.buildClassificationList()
   const title = "Add Inventory"
   res.render("inventory/addInventory",{
     title,
     nav,
-    errors,
+    classification_list,
+    errors: null,
   })
   
 }
 
 /**
- * Add new classification
+ * Build Add new classification
  */
 invCont.buildAddClassification = async function (req, res, next) {
   let nav = await utilities.getNav()
@@ -79,6 +81,29 @@ invCont.buildAddClassification = async function (req, res, next) {
   })
   
 }
+
+/**
+ * process new inventory
+ */
+invCont.addInventory = async function (req, res) {
+  try {
+    const { inv_make, classification_id, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color } = req.body;
+
+    const result = await invModel.addInventory(inv_make, classification_id, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color);
+
+    if (result.rowCount > 0) {
+      req.flash("success", "Inventory item added successfully!");
+      return res.redirect("/inv");
+    } else {
+      req.flash("error", "Failed to add inventory item.");
+      return res.redirect("/inv/addInventory");
+    }
+  } catch (error) {
+    console.error("Error adding inventory:", error);
+    req.flash("error", "An unexpected error occurred.");
+    return res.redirect("/inv/addInventory");
+  }
+};
 
 /**
  * process new classificaiton
@@ -96,6 +121,7 @@ invCont.addClassification = async function (req, res) {
         nav,
         errors: null,
         classification_name,
+
       });
     }
 

@@ -20,6 +20,20 @@ async function addClassification(classification_name) {
 }
 
 /**
+ * add inventory, also formats a few of the elements
+ */
+async function addInventory(inv_make, classification_id, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color) {
+  try {
+    inv_image = "/images/vehicles/" + inv_image;
+    inv_thumbnail = "/images/vehicles/" + inv_image;
+    const sql = "INSERT INTO inventory(classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
+    return await pool.query(sql, [classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color]);
+  } catch (error){
+    return error.message;
+  }
+}
+
+/**
  * check for existing classification
  */
 async function getClassification(classification_name) {
@@ -66,6 +80,6 @@ async function getInventoryById(inventory_id) {
   
 }
 
-module.exports = {getClassifications, getInventoryByClassificationId, getInventoryById, getClassification, addClassification};
+module.exports = {getClassifications, getInventoryByClassificationId, getInventoryById, getClassification, addClassification, addInventory};
 
 

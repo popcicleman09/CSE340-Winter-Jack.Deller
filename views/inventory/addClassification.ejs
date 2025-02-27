@@ -15,7 +15,7 @@
       <div class="form_box">
         <form id="addClassificationForm"  action="/inv/addClassification" method="post">
           <label for="classification_name">Classification Name</label><br>
-          <input type="text" id="classification_name" name="classification_name" required placeholder="Only letters and numbers" pattern="^[a-zA-Z0-9]+$" title="Only letters and numbers"><br><br>
+          <input type="text" id="classification_name" name="classification_name" required placeholder="Only letters and numbers" pattern="^[a-zA-Z0-9]+$" title="Only letters and numbers" value="<%= locals.classification_name %>"><br><br>
           <input type="submit" value="submit">
         </form>
       </div>

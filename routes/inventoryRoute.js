@@ -19,6 +19,14 @@ router.post(
     Util.handleErrors(invController.addClassification)
 
 )
+
+//addInventory post
+router.post(
+    "/addInventory",
+    invValidate.inventoryRules(),
+    invValidate.checkInventoryData,
+    Util.handleErrors(invController.addInventory)
+)
 // File Not Found Route - must be last route in list
 router.get("/cause-error", Util.handleErrors((req, res, next) => {
     const error = new Error("This is an intentional server error.")

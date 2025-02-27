@@ -1,6 +1,54 @@
-<% if (title) { %>
+<% if (title) 
+{ %>
     <h1><%= title %></h1>
+    <%- messages() %>
+
+    <% if (errors) { %>
+    <ul class="notice">
+    <% errors.array().forEach(error => { %>
+    <li><%= error.msg %></li>
+    <%  }) %>
+    </ul>
+    <% } %>
+
+    <div class="form_center_box">
+      <div class="form_box">
+        <form id="addInventoryForm"  action="/inv/addInventory" method="post">
+          <label for="inv_make">Inventory Make</label><br>
+          <input type="text" id="inv_make" name="inv_make" required placeholder="Only letters and numbers" pattern="^[a-zA-Z0-9]+$" title="Only letters and numbers" value="<%= locals.inv_make %>"><br><br>
+          
+          <label for="classification_id">Classification Name</label><br>
+          <%- classification_list %><br><br>
+
+          <label for="inv_model">Inventory Make</label><br>
+          <input type="text" id="inv_model" name="inv_model" required placeholder="Only letters and numbers" pattern="^[a-zA-Z0-9]+$" title="Only letters and numbers" value="<%= locals.inv_model %>"><br><br>
+
+          <label for="inv_year">Inventory Year</label><br>
+          <input type="text" id="inv_year" name="inv_year" required placeholder="Only numbers" pattern="^[0-9]+$" title="Only numbers" value="<%= locals.inv_year %>"><br><br>
+
+          <label for="inv_description">Inventory Description</label><br>
+          <input type="text" id="inv_description" name="inv_description" required placeholder="Only letters and numbers" pattern="^[a-zA-Z0-9]+$" title="Only letters and numbers" value="<%= locals.inv_description %>"><br><br>
+
+          <label for="inv_image">Inventory Image Link</label><br>
+          <input type="text" id="inv_image" name="inv_image" required placeholder="Only letters, numbers and limited symbols" pattern="^[a-zA-Z0-9._-]+$" title="Only letters, numbers and limited symbols" value="<%= locals.inv_image %>"><br><br>
+
+          <label for="inv_thumbnail">Inventory Thumbnail Link</label><br>
+          <input type="text" id="inv_thumbnail" name="inv_thumbnail" required placeholder="Only letters, numbers and limited symbols" pattern="^[a-zA-Z0-9._-]+$" title="Only letters, numbers and limited symbols" value="<%= locals.inv_thumbnail %>"><br><br>
+
+          <label for="inv_price">Inventory Price</label><br>
+          <input type="text" id="inv_price" name="inv_price" required placeholder="Only numbers" pattern="^[0-9]+$" title="Only numbers" value="<%= locals.inv_price %>"><br><br>
+
+          <label for="inv_miles">Inventory Miles</label><br>
+          <input type="text" id="inv_miles" name="inv_miles" required placeholder="Only numbers" pattern="^[0-9]+$" title="Only numbers" value="<%= locals.inv_miles %>"><br><br>
+
+          <label for="inv_color">Inventory Color</label><br>
+          <input type="text" id="inv_color" name="inv_color" required placeholder="Only letters and numbers" pattern="^[a-zA-Z0-9]+$" title="Only letters and numbers" value="<%= locals.inv_color %>"><br><br>
+
+          <input type="submit" value="submit">
+        </form>
+      </div>
+    </div>
+
     <% } else {
       res.redirect('/')
     } %>
-    <%- messages() %>
