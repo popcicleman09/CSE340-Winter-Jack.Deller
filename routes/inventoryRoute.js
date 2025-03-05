@@ -34,4 +34,19 @@ router.get("/cause-error", Util.handleErrors((req, res, next) => {
     next(error)
 }))
 
+//find by clssification_id
+router.get("/getInventory/:classification_id",
+    Util.handleErrors(invController.getInventoryJSON)
+)
+
+//edit inventory item
+router.get("/edit/:inventory_id",
+    Util.handleErrors(invController.buildEditInventoryItem)
+)
+router.post("/update/",
+    invValidate.inventoryRules(),
+    invValidate.checkUpdateData,
+    Util.handleErrors(invController.updateInventory)
+)
+
 module.exports = router;

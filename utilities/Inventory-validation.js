@@ -40,17 +40,15 @@ const utilities = require(".")
 
         body("inv_image")
         .trim()
-        .escape()
-        .notEmpty().withMessage("inventory image is required")
-        .isLength({min: 1}).withMessage("inventory image must be at least 1 character long")
-        .matches(/^[a-zA-Z0-9._-]+$/).withMessage("inventory image must only have letters and numbers"),
+        .notEmpty().withMessage("Inventory image is required")
+        .isLength({ min: 1 }).withMessage("Inventory image must be at least 1 character long")
+        .matches(/^[a-zA-Z0-9._\/-]+$/).withMessage("Inventory image must only contain letters, numbers, dots, underscores, dashes, and slashes"),
 
         body("inv_thumbnail")
         .trim()
-        .escape()
         .notEmpty().withMessage("inventory thumbnail is required")
         .isLength({min: 1}).withMessage("inventory thumbnail must be at least 1 character long")
-        .matches(/^[a-zA-Z0-9._-]+$/).withMessage("inventory thumbnail must only have letters and numbers"),
+        .matches(/^[a-zA-Z0-9._\/\\-]+$/).withMessage("inventory thumbnail must only have letters and numbers"),
 
         body("inv_price")
         .trim()
@@ -99,6 +97,40 @@ const utilities = require(".")
             inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color,
             classification_list,
         });
+        return
+    }
+    next();
+  };
+
+  validate.checkUpdateData = async (req, res, next) => {
+    const {inv_id, classification_id ,inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color} = req.body
+    let errors = validationResult(req)
+    if (!errors.isEmpty()){
+      let nav = await utilities.getNav()
+      const inventory_id = parseInt(req.params.inventory_id)
+      let classification_list = await utilities.buildClassificationList(classification_id)
+
+      console.log(`Editing Inventory ID:${inventory_id}`)
+      console.log(`classificaiton ID: ${classification_id}`)
+      const title = `Edit Inventory: ${inv_make} ${inv_model}`
+      res.render("inventory/editInventory",{
+        title,
+        nav,
+        classification_list,
+        errors,
+        inv_id,
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        inv_price,
+        inv_miles,
+        inv_color,
+        classification_id
+      })
+      
         return
     }
     next();
