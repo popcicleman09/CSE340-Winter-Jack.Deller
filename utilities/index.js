@@ -122,6 +122,9 @@ Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)
 * Middleware to check token validity
 **************************************** */
 Util.checkJWTToken = (req, res, next) => {
+  res.locals.loggedin=0;
+  res.locals.accountData=null;
+
   if (req.cookies.jwt) {
    jwt.verify(
     req.cookies.jwt,
@@ -130,7 +133,7 @@ Util.checkJWTToken = (req, res, next) => {
      if (err) {
       req.flash("Please log in")
       res.clearCookie("jwt")
-      return res.redirect("/account/login")
+      return res.redirect("/account/login/")
      }
      res.locals.accountData = accountData
      res.locals.loggedin = 1
@@ -140,6 +143,25 @@ Util.checkJWTToken = (req, res, next) => {
    next()
   }
  }
+
+ /*
+ * check for admin/employe
+ */
+Util.requireEmployeeOrAdmin = (req, res, next) => {
+  if(!res.locals.loggedin){
+    req.flash("notice", "You must be logged in to access this page");
+    return res.redirect("/account/login")
+  }
+
+  const {account_type} = res.locals.accountData;
+
+  if(account_type === "Employee" || account_type === "Admin"){
+    next();
+  } else {
+    req.flash("notice", "You do not have the permission to view this page.")
+    return res.redirect("/account/login")
+  }
+}
 
  /* ****************************************
  *  Check Login

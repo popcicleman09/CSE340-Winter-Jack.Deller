@@ -39,6 +39,14 @@ router.get("/getInventory/:classification_id",
     Util.handleErrors(invController.getInventoryJSON)
 )
 
+//delete inventory item
+router.get("/delete/:inventory_id",
+    Util.handleErrors(invController.buildDeleteConfirmation)
+)
+router.post("/delete",
+    Util.handleErrors(invController.deleteInventory)
+)
+
 //edit inventory item
 router.get("/edit/:inventory_id",
     Util.handleErrors(invController.buildEditInventoryItem)

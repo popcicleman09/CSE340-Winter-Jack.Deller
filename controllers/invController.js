@@ -155,6 +155,35 @@ invCont.getInventoryJSON = async (req, res, next) => {
   }
 }
 
+/**
+ * build confirm delete view
+ */
+invCont.buildDeleteConfirmation = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const inventory_id = parseInt(req.params.inventory_id)
+  const inventory_data = await invModel.getInventoryById(inventory_id)
+  let classification_list = await utilities.buildClassificationList(inventory_data.classification_id)
+
+  console.log(`Confirming delete Inventory ID:${inventory_id}`)
+  const title = `Delete Inventory: ${inventory_data.inv_make} ${inventory_data.inv_model}`
+  res.render("inventory/delete-confirm",{
+    title,
+    nav,
+    classification_list,
+    errors: null,
+    inv_id: inventory_data.inv_id,
+    inv_make: inventory_data.inv_make,
+    inv_model: inventory_data.inv_model,
+    inv_year: inventory_data.inv_year,
+    inv_description: inventory_data.inv_description,
+    inv_image: inventory_data.inv_image,
+    inv_thumbnail: inventory_data.inv_thumbnail,
+    inv_price: inventory_data.inv_price,
+    inv_miles: inventory_data.inv_miles,
+    inv_color: inventory_data.inv_color,
+    classification_id: inventory_data.classification_id
+  })
+}
 
 /**
  * build edit inventory item
@@ -248,5 +277,26 @@ invCont.updateInventory = async function (req, res, next) {
   }
 }
 
+/* ***************************
+ *  Delete Inventory Data
+ * ************************** */
+invCont.deleteInventory = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const {
+    inv_id,
+  } = req.body
+  const updateResult = await invModel.deleteInventory(
+    inv_id,  
+
+  )
+
+  if (updateResult) {
+    req.flash("notice", `The ${inv_id} was successfully deleted.`)
+    res.redirect("/inv/")
+  } else {
+    req.flash("error", `The ${inv_id} was not deleted`)
+    res.redirect(`/inv/delete/${inv_id}`)
+    }
+  }
 
 module.exports = invCont

@@ -5,3 +5,13 @@
     } %>
     <%- messages() %>
 <p>You're logged in</p>
+
+<% if (accountData.account_type === "Client") { %>
+  <h2>Welcome customer <%= accountData.account_firstname %> </h2>
+<% } else { %>
+  <h2>Welcome <%= accountData.account_firstname %> </h2>
+  <h3>Inventory Managment</h3>
+  <p>  <a href="/inv/">Here</a></p>
+<% } %>
+
+<a href='/account/update/<%= accountData.account_id%>'>Update Information</a>
