@@ -6,7 +6,7 @@ const Util = require("../utilities/")
 const invValidate = require('../utilities/Inventory-validation')
 // Route to build inventory by classification view
 router.get("/type/:classificationId", Util.handleErrors(invController.buildByClassificationId));
-router.get("/detail/:inventory_id", Util.handleErrors(invController.buildByInventoryId))
+router.get("/detail/:inventory_id",Util.handleErrors(invController.buildByInventoryId))
 router.get("/", Util.handleErrors(invController.buildInventoryManagement))
 router.get("/addInventory" , Util.handleErrors(invController.buildAddInventory))
 router.get("/addClassification", Util.handleErrors(invController.buildAddClassification))
@@ -55,6 +55,12 @@ router.post("/update/",
     invValidate.inventoryRules(),
     invValidate.checkUpdateData,
     Util.handleErrors(invController.updateInventory)
+)
+
+router.post("/addReview",
+    invValidate.reviewRules(),
+    invValidate.checkReviewData,
+    Util.handleErrors(invController.addReview)
 )
 
 module.exports = router;

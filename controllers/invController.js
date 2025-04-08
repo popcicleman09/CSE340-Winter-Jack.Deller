@@ -1,4 +1,5 @@
 const invModel = require("../models/inventory-model")
+const revModel = require("../models/review-model")
 const utilities = require("../utilities/")
 
 const invCont = {}
@@ -20,6 +21,29 @@ invCont.buildByClassificationId = async function (req, res, next) {
 }
 
 /**
+ * add a new review
+ */
+invCont.addReview = async function (req, res, next) {
+  try{
+    const {inv_id,account_id,review_text} = req.body;
+    const result = await revModel.addReview(review_text,inv_id,account_id);
+
+    if (result.row > 0) {
+      req.flash("success", "review added successfully!");
+    }else{
+      req.flash("error", "Failed to add inventory item.");
+    }
+    return res.redirect(`/inv/detail/${inv_id}`)
+  }catch (error) {
+    console.error("Error adding review:", error);
+    req.flash("error", "An unexpected error occured.");
+    return res.redirect(`/inv/detail/${inv_id}`)
+  }
+};
+
+
+
+/**
  * build by inventory id
  */
 invCont.buildByInventoryId = async function (req, res, next) {
@@ -28,12 +52,16 @@ invCont.buildByInventoryId = async function (req, res, next) {
   const data = await invModel.getInventoryById(inventory_id)
   console.log("query result: ", data)
   const details = await utilities.buildInventoryDetails(data)
+  const reviews = await utilities.buildReviewsByInv(inventory_id)
   let nav = await utilities.getNav()
   const title = `${data.inv_make} ${data.inv_model}`
+  const inv_id = data.inv_id
   res.render("inventory/details",{
     title,
     nav,
     details,
+    reviews,
+    inv_id
   })
 }
 

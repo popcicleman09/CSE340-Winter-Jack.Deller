@@ -1,4 +1,5 @@
 const invModel = require("../models/inventory-model")
+const reviewModel = require("../models/review-model")
 const Util = {}
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
@@ -111,12 +112,72 @@ Util.buildClassificationList = async function (classification_id = null) {
   return classificationList;
 };
 
+
+/**
+ * build reviews section by inv_id
+ * this module can then be placed inventory details pages
+ */
+Util.buildReviewsByInv = async function (inv_id) {
+  reviewshtml = ""
+  reviewsRaw = await reviewModel.getReviews(inv_id)
+  console.log(reviewsRaw)
+  reviewshtml += "<h2>Reviews</h2>"
+
+  //displays existing rows based on the reviewsRaw variable
+  if(reviewsRaw.length > 0){
+  reviewsRaw.forEach((row) => {
+    reviewshtml += "<div class='form_center_box'>"
+      reviewshtml += "<div>"
+        reviewshtml += "<p>By: " + row.account_firstname + "</p>"
+        reviewshtml += "<p>On: " + row.review_date + "</p>"
+        reviewshtml += `<p>  ${row.review_text}  </p>`
+      reviewshtml += "</div>"
+    reviewshtml += "</div>"
+  })}
+
+
+  return reviewshtml
+}
+
+/**
+ * build reviews section by account_id
+ * this module can then be placed in accounts page.
+ */
+
+Util.buildReviewsByAccount = async function (account_id) {
+  reviewshtml = ""
+  reviewsRaw = await reviewModel.getReviewsByAccount(account_id)
+  console.log(reviewsRaw)
+  if(reviewsRaw.length > 0){
+    reviewsRaw.forEach((row) => {
+      reviewshtml += "<div class='form_center_box'>"
+        reviewshtml += "<div>"
+          reviewshtml += "<p>On: " + row.review_date + "</p>"
+          reviewshtml += `<form action="/account/updateReview" method="post">`
+            reviewshtml += `<input type="text" id="review_text" name="review_text" required value="${row.review_text}"><br><br>`
+            reviewshtml += `<input type="hidden" id="review_id" name="review_id" value="${row.review_id}">`
+            reviewshtml += `<input type="submit" value="Update">`
+          reviewshtml += `</form>`
+          reviewshtml += `<form action="/account/deleteReview/${row.review_id}" method="post">`
+          reviewshtml += `<input type="submit" value="Delete"></form>`
+        reviewshtml += "</div>"
+      reviewshtml += "</div>"
+    })}
+  return reviewshtml
+}
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
  * General Error Handling
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+
+/*
+* simple check if logged in and return bool
+*/
+Util.checkLogin
+
 
 /* ****************************************
 * Middleware to check token validity

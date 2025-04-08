@@ -1,5 +1,6 @@
 const utilities = require("../utilities/")
 const accountModel = require("../models/account-model")
+const reviewModel = require("../models/review-model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
@@ -188,9 +189,13 @@ async function accountLogin(req, res) {
 
 async function buildManagment(req, res, next) {
   const nav = await utilities.getNav()
+  const token = jwt.decode(req.cookies.jwt)
+  console.log(jwt.decode)
+  const reviews = await utilities.buildReviewsByAccount(token.account_id)
   res.render("account/managment",{
     title: "account managment",
     nav,
+    reviews
   }
   ) 
 }
@@ -215,5 +220,41 @@ async function buildUpdate(req,res,next) {
   })
 }
 
+// delete review
+async function deleteReview(req,res) {
+  const review_id = req.params.review_id
+  console.log("deleting review: " + review_id )
+  await reviewModel.deleteReview(review_id)
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildManagment, buildUpdate,updateUserInformation,updatePassword}
+  const nav = await utilities.getNav()
+  const token = jwt.decode(req.cookies.jwt)
+  console.log(jwt.decode)
+  const reviews = await utilities.buildReviewsByAccount(token.account_id)
+  res.redirect("account/managment",{
+    title: "account managment",
+    nav,
+    reviews
+  }
+  ) 
+  
+}
+
+//update review
+async function updateReview(req,res) {
+  const {review_id, review_text} = req.body
+  console.log("updating review: " + review_id + " With text: " + review_text)
+  await reviewModel.updateReview(review_id, review_text)
+
+  const nav = await utilities.getNav()
+  const token = jwt.decode(req.cookies.jwt)
+  console.log(jwt.decode)
+  const reviews = await utilities.buildReviewsByAccount(token.account_id)
+  res.render("account/managment",{
+    title: "account managment",
+    nav,
+    reviews
+  }
+  ) 
+}
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildManagment, buildUpdate,updateUserInformation,updatePassword, updateReview,deleteReview}

@@ -54,8 +54,24 @@ async function deleteReview(review_id) {
 async function getReviews(inv_id) {
     try {
         const data = await pool.query(
-            `SELECT * FROM public.review WHERE inv_id = $1`,
+            `SELECT review.*, account.account_firstname
+            FROM public.review
+            JOIN public.account ON review.account_id = account.account_id
+            WHERE review.inv_id = $1
+            `,
             [inv_id]
+        )
+        return data.rows
+    } catch (error) {
+        console.error("getReviews error:" + error)
+    }
+}
+
+async function getReviewsByAccount(account_id) {
+    try {
+        const data = await pool.query(
+            `SELECT * FROM review WHERE account_id = $1`,
+            [account_id]
         )
         return data.rows
     } catch (error) {
@@ -65,4 +81,4 @@ async function getReviews(inv_id) {
 
 
 
-module.exports = {addReview, getReviews, updateReview, deleteReview}
+module.exports = {addReview, getReviews, updateReview, deleteReview, getReviewsByAccount}

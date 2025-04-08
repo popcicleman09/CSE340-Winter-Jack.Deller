@@ -45,4 +45,14 @@ router.post(
   regValidate.checkUpdatePassword,
   Util.handleErrors(accountController.updatePassword)
 )
+
+router.post(
+  "/deleteReview/:review_id",
+  Util.handleErrors(accountController.deleteReview)
+
+)
+router.post(
+  "/updateReview",
+  Util.handleErrors(accountController.updateReview)
+)
 module.exports = router;

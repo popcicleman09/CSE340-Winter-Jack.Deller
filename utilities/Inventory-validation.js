@@ -84,6 +84,43 @@ const utilities = require(".")
     ]
   }
 
+  validate.reviewRules = () => {
+    return [
+      body("review_text")
+      .trim()
+      .escape()
+      .notEmpty().withMessage("Text is required")
+      .isLength({min: 1}).withMessage("Text must be at least 1 character")
+      .matches(/^[a-zA-Z0-9\s]+$/).withMessage("Only letters, numbers, and spaces")
+    ]
+  }
+
+  validate.checkReviewData = async (req, res, next) => {
+    const {inv_id, account_id, review_text} = req.body
+    let errors = validationResult(req)
+    if (!errors.isEmpty()){
+      console.log("requested inventory_id", inv_id)
+      const inventory_id = inv_id
+      const data = await invModel.getInventoryById(inv_id)
+      console.log("query result: ", data)
+      const details = await utilities.buildInventoryDetails(data)
+      const reviews = await utilities.buildReviewsByInv(inv_id)
+      let nav = await utilities.getNav()
+      const title = `${data.inv_make} ${data.inv_model}`
+      const inv_id = data.inv_id
+      res.render("inventory/details",{
+        title,
+        nav,
+        details,
+        reviews,
+        inv_id
+      })
+      return
+    }
+    next();
+  }
+
+
   validate.checkInventoryData = async (req, res, next) => {
     const {inv_make,inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color} = req.body
     let errors = validationResult(req)
